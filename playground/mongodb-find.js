@@ -1,4 +1,4 @@
-const { MongoClient} = require('mongodb');
+const { MongoClient, ObjectID} = require('mongodb');
 
 MongoClient.connect('mongodb://localhost:27017/TodoApp', (e, client) => {
 	if (e) {
@@ -20,26 +20,7 @@ MongoClient.connect('mongodb://localhost:27017/TodoApp', (e, client) => {
 	// 	console.log('Unable to fetch documents');
 	// });
 	
-	// delete many
-	
-	db.collection('Todos').deleteMany({text: 'eat lunch'}).then((docs) => {
-		if (docs.result.n !== 0) {
-			console.log(`Successfully removed ${docs.result.n} documents`);
-		} else {
-			console.log('No matching documents found');
-		}
-	}, (e) => {
-		console.log('Unable to fetch records');
-	});
-	
-	db.collection('Todos').deleteOne({text: 'go to the store'}).then((docs) => {
-		if (docs.result.n !== 0) {
-			console.log('Successfully removed the first document matching query');
-		} else {
-			console.log('No documents found matching query');
-		}
-	});
-	
+
 	console.log('Connected to MongoDB server');
 	
 	client.close();
