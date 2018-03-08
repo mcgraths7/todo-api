@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="48c07f57-54d8-457f-b834-1a9d52267c58" name="Default" comment="">
-      <change beforePath="" afterPath="$PROJECT_DIR$/.idea/vcs.xml" />
+      <change beforePath="$PROJECT_DIR$/playground/mongodb-find.js" afterPath="$PROJECT_DIR$/playground/mongodb-find.js" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -29,8 +29,8 @@
       <file leaf-file-name="mongodb-find.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/playground/mongodb-find.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="375">
-              <caret line="25" column="3" lean-forward="true" selection-start-line="25" selection-start-column="3" selection-end-line="25" selection-end-column="3" />
+            <state relative-caret-position="570">
+              <caret line="38" column="55" lean-forward="false" selection-start-line="38" selection-start-column="55" selection-end-line="38" selection-end-column="55" />
               <folding />
             </state>
           </provider>
@@ -40,7 +40,7 @@
         <entry file="file://$PROJECT_DIR$/package.json">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="0">
-              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <caret line="0" column="1" lean-forward="true" selection-start-line="0" selection-start-column="1" selection-end-line="0" selection-end-column="1" />
               <folding />
             </state>
           </provider>
@@ -62,8 +62,8 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/playground/mongodb-connect.js" />
-        <option value="$PROJECT_DIR$/playground/mongodb-find.js" />
         <option value="$PROJECT_DIR$/.gitignore" />
+        <option value="$PROJECT_DIR$/playground/mongodb-find.js" />
       </list>
     </option>
   </component>
@@ -157,12 +157,12 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1520525714992</updated>
-      <workItem from="1520525716066" duration="3190000" />
+      <workItem from="1520525716066" duration="4348000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="3190000" />
+    <option name="totallyTimeSpent" value="4348000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1680" height="970" extended-state="6" />
@@ -199,14 +199,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/package.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/playground/mongodb-connect.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="495">
@@ -223,10 +215,18 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/package.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="1" lean-forward="true" selection-start-line="0" selection-start-column="1" selection-end-line="0" selection-end-column="1" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/playground/mongodb-find.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="375">
-          <caret line="25" column="3" lean-forward="true" selection-start-line="25" selection-start-column="3" selection-end-line="25" selection-end-column="3" />
+        <state relative-caret-position="570">
+          <caret line="38" column="55" lean-forward="false" selection-start-line="38" selection-start-column="55" selection-end-line="38" selection-end-column="55" />
           <folding />
         </state>
       </provider>
