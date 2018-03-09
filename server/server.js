@@ -5,9 +5,20 @@ mongoose.Promise = global.Promise;
 mongoose.connect('mongodb://localhost:27017/TodoApp');
 
 let todoSchema = new Schema({
-	text: String,
-	completed: {type: Boolean, default: false},
-	completedAt: Number
+	text: {
+		type: String,
+		required: true,
+		minlength: 1,
+		trim: true
+	},
+	completed: {
+		type: Boolean,
+		default: false
+	},
+	completedAt: {
+		type: Number,
+		default: null
+	}
 });
 
 let Todo = mongoose.model('Todo', todoSchema);
@@ -28,8 +39,10 @@ todo = new Todo({
 	completedAt: 308
 });
 
-todo.save().then((doc) => {
-	console.log('Saved todo', doc);
-}, (e) => {
-	console.log('Unable to save document');
-});
+// todo.save().then((doc) => {
+// 	console.log('Saved todo', doc);
+// }, (e) => {
+// 	console.log('Unable to save document');
+// });
+
+console.log(`${new Date().getDay()}-${new Date().getMonth()}-${new Date().getFullYear()}`);
