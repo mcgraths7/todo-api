@@ -6,7 +6,7 @@ mongoose.connect('mongodb://localhost:27017/TodoApp');
 
 let todoSchema = new Schema({
 	text: String,
-	completed: Boolean,
+	completed: {type: Boolean, default: false},
 	completedAt: Number
 });
 
