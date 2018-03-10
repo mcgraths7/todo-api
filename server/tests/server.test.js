@@ -116,3 +116,38 @@ describe('GET /todos/:id', () => {
 	});
 });
 
+// 3 test cases - object found and deleted, object not found, invalid objectID
+
+describe('DELETE /todos/:id', () => {
+	let hexID = seedData[0]._id.toHexString();
+	it('should remove specified todo', (done) => {
+		request(app)
+			.delete(`/todos/${hexID}`)
+			.expect(200)
+			.expect((response) => {
+				expect(response.body.todo._id).toBe(hexID);
+			})
+			.end((err, res) => {
+				if (err){
+					return done(err);
+				}
+				Todo.findById(hexID).then((doc) => {
+					expect(doc).toBe(null);
+					done();
+				}).catch((e) => done(e));
+			});
+	});
+	it('should return 404 status code on invalid object id', (done) => {
+		request(app)
+			.delete('/todos/115aa438b4f5c25f4d70be2a9b')
+			.expect(404)
+			.end(done);
+	});
+	it('should return 404 when pass a valid object id, but id is not found in database', (done) => {
+		request(app)
+			.delete('/todos/6aa438b4f5c25f4d70be2a9b')
+			.expect(404)
+			.end(done);
+	});
+});
+
