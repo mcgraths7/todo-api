@@ -1,5 +1,4 @@
-const expect     = require('expect'),
-			request    = require('supertest'),
+const request    = require('supertest'),
 			{ObjectID} = require('mongodb');
 
 const {app}  = require('../server'),
@@ -7,7 +6,8 @@ const {app}  = require('../server'),
 const seedData = [
 	{
 		_id: new ObjectID('5aa438b4f5c25f4d70be2a9b'),
-		text: "First test todo"},
+		text: "First test todo"
+	},
 	{text: "Second test todo"},
 	{text: "Third test todo"}
 ];
@@ -20,7 +20,7 @@ beforeEach((done) => {
 });
 
 describe('POST /todos', () => {
-	it('should create a todo', (done) => {
+	test('should create a todo', (done) => {
 		let text = "This is a new todo";
 		request(app)
 			.post('/todos')
@@ -41,7 +41,7 @@ describe('POST /todos', () => {
 				}).catch((err) => done(err));
 			});
 	});
-	it('should trim the leading and trailing white space from input', (done) => {
+	test('should trim the leading and trailing white space from input', (done) => {
 		let text = '   This is a new todo    ';
 		request(app)
 			.post('/todos')
@@ -61,7 +61,7 @@ describe('POST /todos', () => {
 				}).catch((err) => done(err));
 			});
 	});
-	it('should not create a todo with invalid body argument', (done) => {
+	test('should not create a todo with invalid body argument', (done) => {
 		request(app)
 			.post('/todos')
 			.send({})
@@ -79,7 +79,7 @@ describe('POST /todos', () => {
 });
 
 describe('GET /todos', () => {
-	it('should return all todos', (done) => {
+	test('should return all todos', (done) => {
 		request(app)
 			.get('/todos')
 			.expect(200)
@@ -93,7 +93,7 @@ describe('GET /todos', () => {
 // 3 test cases - valid request, valid object id but not found in database, invalid object id
 
 describe('GET /todos/:id', () => {
-	it('should return specified todo', (done) => {
+	test('should return specified todo', (done) => {
 		request(app)
 			.get('/todos/5aa438b4f5c25f4d70be2a9b')
 			.expect(200)
@@ -102,13 +102,13 @@ describe('GET /todos/:id', () => {
 			})
 			.end(done);
 	});
-	it('should return 404 status code on invalid object id', (done) => {
+	test('should return 404 status code on invalid object id', (done) => {
 		request(app)
 			.get('/todos/115aa438b4f5c25f4d70be2a9b')
 			.expect(404)
 			.end(done);
 	});
-	it('should return 404 when pass a valid object id, but id is not found in database', (done) => {
+	test('should return 404 when pass a valid object id, but id is not found in database', (done) => {
 		request(app)
 			.get('/todos/6aa438b4f5c25f4d70be2a9b')
 			.expect(404)
@@ -120,7 +120,7 @@ describe('GET /todos/:id', () => {
 
 describe('DELETE /todos/:id', () => {
 	let hexID = seedData[0]._id.toHexString();
-	it('should remove specified todo', (done) => {
+	test('should remove specified todo', (done) => {
 		request(app)
 			.delete(`/todos/${hexID}`)
 			.expect(200)
@@ -137,17 +137,16 @@ describe('DELETE /todos/:id', () => {
 				}).catch((e) => done(e));
 			});
 	});
-	it('should return 404 status code on invalid object id', (done) => {
+	test('should return 404 status code on invalid object id', (done) => {
 		request(app)
 			.delete('/todos/115aa438b4f5c25f4d70be2a9b')
 			.expect(404)
 			.end(done);
 	});
-	it('should return 404 when pass a valid object id, but id is not found in database', (done) => {
+	test('should return 404 when pass a valid object id, but id is not found in database', (done) => {
 		request(app)
 			.delete('/todos/6aa438b4f5c25f4d70be2a9b')
 			.expect(404)
 			.end(done);
 	});
 });
-
