@@ -1,10 +1,13 @@
-const expect    = require('expect'),
-			request = require('supertest');
+const expect     = require('expect'),
+			request    = require('supertest'),
+			{ObjectID} = require('mongodb');
 
 const {app}  = require('../server'),
 			{Todo} = require('../db/models/todos');
 const seedData = [
-	{text: "First test todo"},
+	{
+		_id: new ObjectID('5aa438b4f5c25f4d70be2a9b'),
+		text: "First test todo"},
 	{text: "Second test todo"},
 	{text: "Third test todo"}
 ];
@@ -13,7 +16,7 @@ beforeEach((done) => {
 	Todo.remove({}).then(() => {
 		Todo.insertMany(seedData)
 	}).then(() => done());
-	
+
 });
 
 describe('POST /todos', () => {
@@ -30,7 +33,7 @@ describe('POST /todos', () => {
 				if (err) {
 					return done(err);
 				}
-				
+
 				Todo.find({text}).then((todos) => {
 					expect(todos.length).toBe(1);
 					expect(todos[0].text).toBe(text);
@@ -83,6 +86,32 @@ describe('GET /todos', () => {
 			.expect((response) => {
 				expect(response.body.todos.length).toBe(3)
 			})
+			.end(done);
+	});
+});
+
+// 3 test cases - valid request, valid object id but not found in database, invalid object id
+
+describe('GET /todos/:id', () => {
+	it('should return specified todo', (done) => {
+		request(app)
+			.get('/todos/5aa438b4f5c25f4d70be2a9b')
+			.expect(200)
+			.expect((response) => {
+				expect(response.body.todo.text).toBe('First test todo');
+			})
+			.end(done);
+	});
+	it('should return 404 status code on invalid object id', (done) => {
+		request(app)
+			.get('/todos/115aa438b4f5c25f4d70be2a9b')
+			.expect(404)
+			.end(done);
+	});
+	it('should return 404 when pass a valid object id, but id is not found in database', (done) => {
+		request(app)
+			.get('/todos/6aa438b4f5c25f4d70be2a9b')
+			.expect(404)
 			.end(done);
 	});
 });

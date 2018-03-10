@@ -38,11 +38,12 @@ const {mongoose} = require('../server/db/mongoose'),
 let objectID = '5aa42c2adb730d4ad1c4f13b';
 
 
-User.findById(objectID).then((user) => {
-	if (!user) {
-		return console.log('ID does not match a user in database');
-	}
-	console.log('User found:', JSON.stringify(user, undefined, 2));
-}, (err) => {
-	console.log(err);
-});
+// User.findById(objectID).then((user) => {
+// 	if (!user) {
+// 		return console.log('ID does not match a user in database');
+// 	}
+// 	console.log('User found:', JSON.stringify(user, undefined, 2));
+// }, (err) => {
+// 	console.log(err);
+// });
+
