@@ -2,11 +2,12 @@ const express    = require('express'),
 	    bodyParser = require('body-parser'),
 			{ObjectID} = require('mongodb');
 
-const {mongoose} = require('./db/mongoose'),
-			{Todo}     = require('./db/models/todos'),
+const {Todo}     = require('./db/models/todos'),
 			{User}     = require('./db/models/users');
 
 let app = express();
+
+let port = process.env.PORT || 3000;
 
 app.use(bodyParser.json());
 
@@ -43,8 +44,8 @@ app.post('/todos', (req, res) => {
 	})
 });
 
-app.listen(3000, () => {
-	console.log('Server is listening on port 3000');
+app.listen(port, () => {
+	console.log(`Server is listening on port ${port}`);
 });
 
 module.exports = {app};
