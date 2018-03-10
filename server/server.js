@@ -3,7 +3,8 @@ const express    = require('express'),
 			{ObjectID} = require('mongodb');
 
 const {Todo}     = require('./db/models/todos'),
-			{User}     = require('./db/models/users');
+			{User}     = require('./db/models/users'),
+			{mongoose} = require('./db/mongoose');
 
 let app = express();
 
