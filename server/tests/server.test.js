@@ -33,9 +33,9 @@ describe('POST /todos', () => {
 					return done(err);
 				}
 				
-				Todo.find().then((todos) => {
-					expect(todos.length).toBe(4);
-					expect(todos[3].text).toBe(text);
+				Todo.find({text}).then((todos) => {
+					expect(todos.length).toBe(1);
+					expect(todos[0].text).toBe(text);
 					done();
 				}).catch((err) => done(err));
 			});
@@ -53,9 +53,9 @@ describe('POST /todos', () => {
 				if (err) {
 					return done(err);
 				}
-				Todo.find().then((todos) => {
-					expect(todos.length).toBe(4);
-					expect(todos[3].text).toBe('This is a new todo');
+				Todo.find({text: "This is a new todo"}).then((todos) => {
+					expect(todos.length).toBe(1);
+					expect(todos[0].text).toBe('This is a new todo');
 					done();
 				}).catch((err) => done(err));
 			});
@@ -80,21 +80,12 @@ describe('POST /todos', () => {
 describe('GET /todos', () => {
 	it('should return all todos', (done) => {
 		request(app)
-		.get('/todos')
-		.expect(200)
-		// .expect((response) => {
-		// 	expect(response.body.length).toBe(4);
-		// })
-		.end((err, res) => {
-			if (err) {
-				return done(err);
-			}
-			Todo.find().then((todos) => {
-				expect(todos.length).toBe(3);
-				expect(todos[2].text).toBe("Third test todo");
-				done();
-			}).catch((err) => done(err));
-		});
+			.get('/todos')
+			.expect(200)
+			.expect((response) => {
+				expect(response.body.todos.length).toBe(3)
+			})
+			.end(done);
 	});
 });
 
