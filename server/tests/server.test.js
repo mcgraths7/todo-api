@@ -2,9 +2,7 @@ const expect    = require('expect'),
 			request = require('supertest');
 
 const {app}  = require('../server'),
-			{Todo} = require('../db/models/todos'),
-			{User} = require('../db/models/users');
-		
+			{Todo} = require('../db/models/todos');
 const seedData = [
 	{text: "First test todo"},
 	{text: "Second test todo"},
