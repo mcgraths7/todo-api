@@ -1,29 +1,13 @@
 const request    = require('supertest'),
 			{ObjectID} = require('mongodb');
 
-const {app}  = require('../server'),
-			{Todo} = require('../db/models/todos');
-const seedData = [
-	{
-		_id: new ObjectID('5aa438b4f5c25f4d70be2a9b'),
-		text: "First test todo",
-		completed: true,
-		completedAt: 123
-	},
-	{
-		_id: new ObjectID('5aa438b4f5c25f4d70be2a9c'),
-		text: "Second test todo",
-		completed: false
-	},
-	{text: "Third test todo"}
-];
+const {app}                                                = require('../server'),
+			{Todo}                                               = require('../db/models/todos'),
+			{User}                                               = require('../db/models/users'),
+			{testTodos, populateTodos, testUsers, populateUsers} = require('./seed/seed');
 
-beforeEach((done) => {
-	Todo.remove({}).then(() => {
-		Todo.insertMany(seedData)
-	}).then(() => done());
-
-});
+beforeEach(populateUsers);
+beforeEach(populateTodos);
 
 describe('POST /todos', () => {
 	test('should create a todo', (done) => {
@@ -99,7 +83,7 @@ describe('GET /todos', () => {
 // 3 test cases - valid request, valid object id but not found in database, invalid object id
 
 describe('GET /todos/:id', () => {
-	let validHexID = seedData[0]._id.toHexString();
+	let validHexID = testTodos[0]._id.toHexString();
 	let invalidHexID = new ObjectID('5aa438b4f5c25f4d70be2a9b').toHexString() + '11';
 	let validHexID2 = new ObjectID('5aa438b4f5c25f4d70be2a9e').toHexString();
 	
@@ -132,7 +116,7 @@ describe('GET /todos/:id', () => {
 // 3 test cases - object found and deleted, object not found, invalid objectID
 
 describe('DELETE /todos/:id', () => {
-	let hexID = seedData[0]._id.toHexString();
+	let hexID = testTodos[0]._id.toHexString();
 	
 	test('should remove specified todo', (done) => {
 		request(app)
@@ -168,8 +152,8 @@ describe('DELETE /todos/:id', () => {
 });
 
 describe('PATCH /todos/:id', () => {
-	let hexID = seedData[0]._id.toHexString();
-	let hexID2 = seedData[1]._id.toHexString();
+	let hexID = testTodos[0]._id.toHexString();
+	let hexID2 = testTodos[1]._id.toHexString();
 	let update = {
 		text: "updated todo",
 		completed: true
@@ -217,5 +201,79 @@ describe('PATCH /todos/:id', () => {
 					done()
 				}).catch((e) => done(e));
 			});
+	})
+});
+
+describe('GET /users/me', () => {
+	let authUser = testUsers[0];
+	let unauthUser = testUsers[1];
+	let authUserToken = authUser.tokens[0].token;
+	
+	it('should allow authenticated user to access', (done) => {
+		request(app)
+			.get('/users/me')
+			.set('x-auth', authUserToken)
+			.expect(200)
+			.expect((res) => {
+				expect(res.body._id).toBe(authUser._id.toHexString());
+				expect(res.body.email).toBe(authUser.email);
+			})
+			.end(done);
+	});
+	
+	it('should not allow unauthenticated user to access', (done) => {
+		request(app)
+			.get('/users/me')
+			.expect(401)
+			.expect((res) => {
+				expect(res.body).toEqual({});
+			})
+			.end(done);
+	});
+});
+
+describe('POST /users', () => {
+	it('should create a user', (done) => {
+		let email = 'example@example.com';
+		let password = '1234567890';
+		request(app)
+			.post('/users')
+			.send({email, password})
+			.expect(200)
+			.expect((res) => {
+				expect(res.headers['x-auth']).toBeTruthy();
+				expect(res.body._id).toBeTruthy();
+				expect(res.body.email).toBe(email);
+			})
+			.end((err) => {
+				if (err) {
+					return done(err);
+				}
+				User.findOne({email}).then((user) => {
+					expect(user).toBeTruthy();
+					expect(user.password === password).toBeFalsy();
+					done();
+				});
+			});
+	});
+	
+	it('should return validation error if data is invalid', (done) => {
+		let email = 'thisisnotanemail';
+		let password = '1234567890';
+		request(app)
+			.post('/users')
+			.send({email, password})
+			.expect(400)
+			.end(done);
+	});
+
+	it('should not create user if email is in use', (done) => {
+		let email = 'me@example.com';
+		let password = '1234567890';
+		request(app)
+			.post('/users')
+			.send({email, password})
+			.expect(400)
+			.end(done);
 	})
 });
