@@ -21,7 +21,11 @@ const testUsers = [
 	{
 		_id: userTwoObjId,
 		email: 'me2@example.com',
-		password: 'passwordabc'
+		password: 'passwordabc',
+		tokens: [{
+			access: 'auth',
+			token: jwt.sign({_id: userTwoObjId, access: 'auth'}, 'sinatra').toString()
+		}]
 	}
 ];
 

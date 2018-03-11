@@ -1,8 +1,8 @@
 Arguments: 
-  /usr/local/bin/node /usr/local/bin/yarn jest
+  /usr/local/bin/node /usr/local/bin/yarn test
 
 PATH: 
-  /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Applications/VMware Fusion.app/Contents/Public:/Library/Frameworks/Mono.framework/Versions/Current/Commands:/Applications/Wireshark.app/Contents/MacOS:/Users/smm-ibm/.rvm/gems/ruby-2.4.0/bin:/Users/smm-ibm/.rvm/gems/ruby-2.4.0@global/bin:/Users/smm-ibm/.rvm/rubies/ruby-2.4.0/bin:/Users/smm-ibm/.rbenv/shims:/Users/smm-ibm/.rvm/bin
+  /Users/smm-ibm/Google Drive/Nodejs/todo-api/node_modules/.bin:/usr/local/lib/node_modules/npm/node_modules/npm-lifecycle/node-gyp-bin:/Users/smm-ibm/Google Drive/Nodejs/todo-api/node_modules/.bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Applications/VMware Fusion.app/Contents/Public:/Library/Frameworks/Mono.framework/Versions/Current/Commands:/Applications/Wireshark.app/Contents/MacOS:/Users/smm-ibm/.rvm/gems/ruby-2.4.0/bin:/Users/smm-ibm/.rvm/gems/ruby-2.4.0@global/bin:/Users/smm-ibm/.rvm/rubies/ruby-2.4.0/bin:/Users/smm-ibm/.rbenv/shims:/Users/smm-ibm/.rvm/bin
 
 Yarn version: 
   1.5.1
@@ -21,7 +21,9 @@ npm manifest:
     "main": "server.js",
     "scripts": {
       "start": "node server/server.js",
+      "start-debug": "export NODE_ENV=test && node inspect server/server.js",
       "test": "export NODE_ENV=test  && jest",
+      "test-debug": "export NODE_ENV=test && node --inspect-brk ./node_modules/jest/bin/jest.js --runInBand",
       "test-watch": "nodemon --exec 'yarn test'"
     },
     "engines": {
@@ -4182,7 +4184,7 @@ Trace:
   Error: Command failed.
   Exit code: 1
   Command: sh
-  Arguments: -c '/Users/smm-ibm/Google Drive/Nodejs/todo-api/node_modules/.bin/jest'
+  Arguments: -c export NODE_ENV=test  && jest
   Directory: /Users/smm-ibm/Google Drive/Nodejs/todo-api
   Output:
   

@@ -90,6 +90,7 @@ describe('GET /todos', () => {
 
 describe('GET /todos/:id', () => {
 	let validHexID = testTodos[0]._id.toHexString();
+	let unownedHexID = testTodos[1]._id.toHexString();
 	let invalidHexID = new ObjectID('5aa438b4f5c25f4d70be2a9b').toHexString() + '11';
 	let validHexID2 = new ObjectID('5aa438b4f5c25f4d70be2a9e').toHexString();
 	
@@ -120,17 +121,27 @@ describe('GET /todos/:id', () => {
 			.expect(404)
 			.end(done);
 	});
+	
+	test('should not return a todo owned by another user', (done) => {
+		request(app)
+			.get(`/todos/${unownedHexID}`)
+			.set('x-auth', testUsers[0].tokens[0].token)
+			.expect(404)
+			.end(done);
+	});
 });
+
+
 
 // 3 test cases - object found and deleted, object not found, invalid objectID
 
 describe('DELETE /todos/:id', () => {
-	let hexID = testTodos[0]._id.toHexString();
+	let hexID = testTodos[1]._id.toHexString();
 	
 	test('should remove specified todo', (done) => {
 		request(app)
 			.delete(`/todos/${hexID}`)
-			.set('x-auth', testUsers[0].tokens[0].token)
+			.set('x-auth', testUsers[1].tokens[0].token)
 			.expect(200)
 			.expect((response) => {
 				expect(response.body.doc._id).toBe(hexID);
@@ -144,6 +155,14 @@ describe('DELETE /todos/:id', () => {
 					done();
 				}).catch((e) => done(e));
 			});
+	});
+	
+	test('should not remove todo owned by another user', (done) => {
+		request(app)
+			.delete(`/todos/${hexID}`)
+			.set('x-auth', testUsers[0].tokens[0].token)
+			.expect(404)
+			.end(done);
 	});
 	
 	test('should return 404 status code on invalid object id', (done) => {
@@ -167,8 +186,12 @@ describe('PATCH /todos/:id', () => {
 	let hexID = testTodos[0]._id.toHexString();
 	let hexID2 = testTodos[1]._id.toHexString();
 	let update = {
-		text: "updated todo",
+		text: "completed todo",
 		completed: true
+	};
+	let update2 = {
+		text: 'todo incomplete',
+		completed: false
 	};
 	
 	test('should update the specified todo to complete', (done) => {
@@ -191,14 +214,11 @@ describe('PATCH /todos/:id', () => {
 				}).catch((e) => done(e));
 			});
 	});
-	let update2 = {
-		completed: false
-	};
 	
 	test('should update the specified todo to incomplete, clearing completedAt field', (done) => {
 		request(app)
 			.patch(`/todos/${hexID2}`)
-			.set('x-auth', testUsers[0].tokens[0].token)
+			.set('x-auth', testUsers[1].tokens[0].token)
 			.send(update2)
 			.expect(200)
 			.expect((response) => {
@@ -215,7 +235,17 @@ describe('PATCH /todos/:id', () => {
 					done()
 				}).catch((e) => done(e));
 			});
-	})
+	});
+	
+	test('should not let user update unowned todo', (done) => {
+		request(app)
+			.patch(`/todos/${hexID}`)
+			.set('x-auth', testUsers[1].tokens[0].token)
+			.send(update)
+			.expect(404)
+			.end(done);
+	});
+	
 });
 
 describe('GET /users/me', () => {
@@ -297,9 +327,9 @@ describe('POST /login', () => {
 		request(app)
 			.post('/users/login')
 			.send({
-			email: testUsers[1].email,
-			password: testUsers[1].password
-		})
+				email: testUsers[1].email,
+				password: testUsers[1].password
+			})
 			.expect(200)
 			.expect((response) => {
 				expect(response.headers['x-auth']).toBeTruthy();
@@ -310,9 +340,8 @@ describe('POST /login', () => {
 				}
 
 				User.findById(testUsers[1]._id).then((user) => {
-					// debugger;
-					expect(user.tokens[0]).toHaveProperty("token", response.headers['x-auth']);
-					expect(user.tokens[0]).toHaveProperty("access", "auth");
+					expect(user.tokens[1]).toHaveProperty("token", response.headers['x-auth']);
+					expect(user.tokens[1]).toHaveProperty("access", "auth");
 					done();
 				}).catch((err) => done(err));
 			})
@@ -323,7 +352,7 @@ describe('POST /login', () => {
 			.post('/users/login')
 			.send({
 				email: testUsers[1].email,
-				password: 'invalid'
+				password: testUsers[1].password +'1'
 			})
 			.expect(400)
 			.expect((response) => {
@@ -335,7 +364,7 @@ describe('POST /login', () => {
 				}
 				
 				User.findById(testUsers[1]._id).then((user) => {
-					expect(user.tokens.length).toBe(0);
+					expect(user.tokens.length).toBe(1);
 					done();
 				}).catch((e) => done(e));
 			});

@@ -27,10 +27,14 @@ app.get('/todos', authenticate, (req, res) => {
 });
 
 app.get('/todos/:id', authenticate, (req, res) => {
-	if (!ObjectID.isValid(req.params.id)) {
+	let id = req.params.id;
+	if (!ObjectID.isValid(id)) {
 		return res.status(404).send();
 	}
-	Todo.findById(req.params.id).then((doc) => {
+	Todo.findOne({
+		_id: id,
+		_creator: req.user._id
+	}).then((doc) => {
 		if (!doc) {
 			return res.status(404).send();
 		}
@@ -53,13 +57,18 @@ app.post('/todos', authenticate, (req, res) => {
 });
 
 app.delete('/todos/:id', authenticate, (req, res) => {
-	if (!ObjectID.isValid(req.params.id)) {
+	let id = req.params.id;
+	if (!ObjectID.isValid(id)) {
 		return res.status(404).send();
 	}
-	Todo.findByIdAndRemove(req.params.id).then((doc) => {
+	Todo.findOneAndRemove({
+		_creator: req.user._id,
+		_id: id
+	}).then((doc) => {
 		if (!doc) {
 			return res.status(404).send();
 		}
+		debugger;
 		res.status(200).send({doc});
 	}).catch((e) => {
 		res.status(400).send();
@@ -81,7 +90,7 @@ app.patch('/todos/:id', authenticate, (req, res) => {
 		body.completedAt = null;
 	}
 	
-	Todo.findByIdAndUpdate(objID, {$set: body}, {new: true}).then((doc) => {
+	Todo.findOneAndUpdate({_id: objID, _creator: req.user._id}, {$set: body}, {new: true}).then((doc) => {
 			if (!doc) {
 				return res.status(404).send();
 			}
