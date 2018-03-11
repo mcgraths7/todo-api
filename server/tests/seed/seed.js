@@ -15,7 +15,7 @@ const testUsers = [
 		password: 'password123',
 		tokens: [{
 			access: 'auth',
-			token: jwt.sign({_id: userOneObjId, access: 'auth'}, 'sinatra').toString()
+			token: jwt.sign({_id: userOneObjId, access: 'auth'}, process.env.JWT_SECRET).toString()
 		}]
 	},
 	{
@@ -24,7 +24,7 @@ const testUsers = [
 		password: 'passwordabc',
 		tokens: [{
 			access: 'auth',
-			token: jwt.sign({_id: userTwoObjId, access: 'auth'}, 'sinatra').toString()
+			token: jwt.sign({_id: userTwoObjId, access: 'auth'}, process.env.JWT_SECRET).toString()
 		}]
 	}
 ];
