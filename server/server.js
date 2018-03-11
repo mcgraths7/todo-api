@@ -15,6 +15,7 @@ let port = process.env.PORT;
 
 app.use(bodyParser.json());
 
+// Routes for Todos
 app.get('/todos', (req, res) => {
 	Todo.find().then((todos) => {
 		res.send({todos});
@@ -85,6 +86,30 @@ app.patch('/todos/:id', (req, res) => {
 	}).catch((e) => {
 		res.status(400).send(e);
 	});
+});
+
+// Routes for Users
+// app.post('/todos', (req, res) => {
+// 	let todo = new Todo({
+// 		text: req.body.text
+// 	});
+// 	todo.save().then((doc) => {
+// 		res.send(doc);
+// 	}, (e) => {
+// 		res.status(400).send(e);
+// 	})
+// });
+app.post('/users', (req, res) => {
+	let body = _.pick(req.body, ['email', 'password']);
+	let user = new User({
+		email: body.email,
+		password: body.password
+	});
+	user.save().then((doc) => {
+		res.send(doc);
+	}, (e) => {
+		res.status(400).send(e);
+	})
 });
 
 
