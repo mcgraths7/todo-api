@@ -282,9 +282,9 @@ describe('POST /users', () => {
 });
 
 describe('POST /login', () => {
-	test('it should login and return a token', (done) => {
+	test('should login and return a token', (done) => {
 		request(app)
-			.post('/login')
+			.post('/users/login')
 			.send({
 			email: testUsers[1].email,
 			password: testUsers[1].password
@@ -307,7 +307,7 @@ describe('POST /login', () => {
 			})
 	});
 
-	test('it should reject invalid login', (done) => {
+	test('should reject invalid login', (done) => {
 		request(app)
 			.post('/users/login')
 			.send({
@@ -328,5 +328,31 @@ describe('POST /login', () => {
 					done();
 				}).catch((e) => done(e));
 			});
+	});
+});
+
+describe('DELETE /users/me/token', () => {
+	
+	test('should remove token from tokens property', (done) => {
+		request(app)
+			.delete('/users/me/token')
+			.set('x-auth', testUsers[0].tokens[0].token)
+			.expect(200)
+			.end((err) => {
+				if (err) {
+					return done(err)
+				}
+				User.findById(testUsers[0]._id).then((user) => {
+					expect(user.tokens.length).toBe(0);
+					done()
+				}).catch((e) => done(e));
+			});
+	});
+	
+	test('should return 401 when user is not authenticated', (done) => {
+		request(app)
+			.delete('/users/me/token')
+			.expect(401)
+			.end(done);
 	});
 });
