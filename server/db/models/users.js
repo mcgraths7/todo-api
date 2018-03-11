@@ -1,9 +1,13 @@
 const mongoose  = require('mongoose'),
 			validator = require('validator'),
 			jwt       = require('jsonwebtoken'),
-			_         = require('lodash');
+			_         = require('lodash'),
+			bcrypt    = require('bcryptjs');
 
 const Schema = mongoose.Schema;
+const SALT_FACTOR = 12;
+
+
 
 let UserSchema = new Schema({
 	email: {
@@ -37,7 +41,6 @@ let UserSchema = new Schema({
 UserSchema.methods.toJSON = function() {
 	let user = this;
 	let userObj = user.toObject();
-	
 	return _.pick(userObj, ['_id', 'email']);
 };
 
@@ -68,6 +71,21 @@ UserSchema.statics.findByToken = function(token) {
 		'tokens.access': 'auth'
 	})
 };
+
+UserSchema.pre('save', function(next) {
+	let user = this;
+	if (!user.isModified('password')) {
+		return next();
+	} else {
+		bcrypt.genSalt(SALT_FACTOR, (err, salt) => {
+			bcrypt.hash(user.password, salt, (err, hash) => {
+				if (err) return next(err);
+				user.password = hash;
+				next()
+			});
+		});
+	}
+});
 
 let User = mongoose.model('User', UserSchema);
 
