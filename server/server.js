@@ -6,8 +6,9 @@ const express    = require('express'),
 			{ObjectID} = require('mongodb'),
 			_          = require('lodash');
 
-const {Todo}     = require('./db/models/todos'),
-			{User}     = require('./db/models/users');
+const {Todo}         = require('./db/models/todos'),
+			{User}         = require('./db/models/users'),
+			{authenticate} = require('./middleware/authenticate');
 
 let app = express();
 
@@ -111,6 +112,10 @@ app.post('/users', (req, res) => {
 	}).catch((e) => {
 		res.status(400).send(e);
 	});
+});
+
+app.get('/users/me', authenticate, (req, res) => {
+	res.send(req.user);
 });
 
 app.listen(port, () => {
