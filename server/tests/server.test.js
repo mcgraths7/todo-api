@@ -10,6 +10,7 @@ beforeEach(populateUsers);
 beforeEach(populateTodos);
 
 describe('POST /todos', () => {
+	
 	test('should create a todo', (done) => {
 		let text = "This is a new todo";
 		request(app)
@@ -31,6 +32,7 @@ describe('POST /todos', () => {
 				}).catch((err) => done(err));
 			});
 	});
+	
 	test('should trim the leading and trailing white space from input', (done) => {
 		let text = '   This is a new todo    ';
 		request(app)
@@ -51,6 +53,7 @@ describe('POST /todos', () => {
 				}).catch((err) => done(err));
 			});
 	});
+	
 	test('should not create a todo with invalid body argument', (done) => {
 		request(app)
 			.post('/todos')
@@ -209,7 +212,7 @@ describe('GET /users/me', () => {
 	let unauthUser = testUsers[1];
 	let authUserToken = authUser.tokens[0].token;
 	
-	it('should allow authenticated user to access', (done) => {
+	test('should allow authenticated user to access', (done) => {
 		request(app)
 			.get('/users/me')
 			.set('x-auth', authUserToken)
@@ -221,7 +224,7 @@ describe('GET /users/me', () => {
 			.end(done);
 	});
 	
-	it('should not allow unauthenticated user to access', (done) => {
+	test('should not allow unauthenticated user to access', (done) => {
 		request(app)
 			.get('/users/me')
 			.expect(401)
@@ -233,7 +236,7 @@ describe('GET /users/me', () => {
 });
 
 describe('POST /users', () => {
-	it('should create a user', (done) => {
+	test('should create a user', (done) => {
 		let email = 'example@example.com';
 		let password = '1234567890';
 		request(app)
@@ -253,11 +256,11 @@ describe('POST /users', () => {
 					expect(user).toBeTruthy();
 					expect(user.password === password).toBeFalsy();
 					done();
-				});
+				}).catch((err) => done(err));
 			});
 	});
 	
-	it('should return validation error if data is invalid', (done) => {
+	test('should return validation error if data is invalid', (done) => {
 		let email = 'thisisnotanemail';
 		let password = '1234567890';
 		request(app)
@@ -267,7 +270,7 @@ describe('POST /users', () => {
 			.end(done);
 	});
 
-	it('should not create user if email is in use', (done) => {
+	test('should not create user if email is in use', (done) => {
 		let email = 'me@example.com';
 		let password = '1234567890';
 		request(app)
@@ -276,4 +279,54 @@ describe('POST /users', () => {
 			.expect(400)
 			.end(done);
 	})
+});
+
+describe('POST /login', () => {
+	test('it should login and return a token', (done) => {
+		request(app)
+			.post('/login')
+			.send({
+			email: testUsers[1].email,
+			password: testUsers[1].password
+		})
+			.expect(200)
+			.expect((response) => {
+				expect(response.headers['x-auth']).toBeTruthy();
+			})
+			.end((err, response) => {
+				if (err) {
+					done(err);
+				}
+
+				User.findById(testUsers[1]._id).then((user) => {
+					// debugger;
+					expect(user.tokens[0]).toHaveProperty("token", response.headers['x-auth']);
+					expect(user.tokens[0]).toHaveProperty("access", "auth");
+					done();
+				}).catch((err) => done(err));
+			})
+	});
+
+	test('it should reject invalid login', (done) => {
+		request(app)
+			.post('/login')
+			.send({
+				email: testUsers[1].email,
+				password: 'invalid'
+			})
+			.expect(400)
+			.expect((response) => {
+				expect(response.headers['x-auth']).toBeFalsy();
+			})
+			.end((err, response) => {
+				if (err) {
+					done(err);
+				}
+				
+				User.findById(testUsers[1]._id).then((user) => {
+					expect(user.tokens.length).toBe(0);
+					done();
+				}).catch((e) => done(e));
+			});
+	});
 });
