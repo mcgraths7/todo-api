@@ -1,3 +1,7 @@
 # IGNORE NODE MODULES FOLDER#
 #############################
 node_modules
+
+# IGNORE CONFIG FILE#
+#####################
+./server/config/config.json
