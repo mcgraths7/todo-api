@@ -8,6 +8,10 @@ let TodoSchema = new Schema({
 		minlength: 1,
 		trim: true
 	},
+	_creator: {
+		type: Schema.Types.ObjectId,
+		required: true
+	},
 	completed: {
 		type: Boolean,
 		default: false

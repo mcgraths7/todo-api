@@ -4,20 +4,7 @@ const {ObjectID} = require('mongodb'),
 const {Todo} = require('../../db/models/todos'),
 			{User} = require('../../db/models/users');
 
-const testTodos = [
-	{
-		_id: new ObjectID('5aa438b4f5c25f4d70be2a9b'),
-		text: "First test todo",
-		completed: true,
-		completedAt: 123
-	},
-	{
-		_id: new ObjectID('5aa438b4f5c25f4d70be2a9c'),
-		text: "Second test todo",
-		completed: false
-	},
-	{text: "Third test todo"}
-];
+
 
 const userOneObjId = new ObjectID();
 const userTwoObjId = new ObjectID();
@@ -37,6 +24,21 @@ const testUsers = [
 		password: 'passwordabc'
 	}
 ];
+
+const testTodos = [
+	{
+		_id: new ObjectID('5aa438b4f5c25f4d70be2a9b'),
+		text: "First test todo",
+		completed: true,
+		completedAt: 123,
+		_creator: userOneObjId
+	},
+	{
+		_id: new ObjectID('5aa438b4f5c25f4d70be2a9c'),
+		text: "Second test todo",
+		completed: false,
+		_creator: userTwoObjId
+	}];
 
 const populateTodos = (done) => {
 	Todo.remove({}).then(() => {
