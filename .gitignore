@@ -4,4 +4,4 @@ node_modules
 
 # IGNORE CONFIG FILE#
 #####################
-./server/config/config.json
+server/config/config.json
