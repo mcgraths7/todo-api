@@ -99,24 +99,31 @@ describe('GET /todos', () => {
 // 3 test cases - valid request, valid object id but not found in database, invalid object id
 
 describe('GET /todos/:id', () => {
+	let validHexID = seedData[0]._id.toHexString();
+	let invalidHexID = new ObjectID('5aa438b4f5c25f4d70be2a9b').toHexString() + '11';
+	let validHexID2 = new ObjectID('5aa438b4f5c25f4d70be2a9e').toHexString();
+	
+	
 	test('should return specified todo', (done) => {
 		request(app)
-			.get('/todos/5aa438b4f5c25f4d70be2a9b')
+			.get(`/todos/${validHexID}`)
 			.expect(200)
 			.expect((response) => {
 				expect(response.body.doc.text).toBe('First test todo');
 			})
 			.end(done);
 	});
+	
 	test('should return 404 status code on invalid object id', (done) => {
 		request(app)
-			.get('/todos/115aa438b4f5c25f4d70be2a9b')
+			.get(`/todos/${invalidHexID}`)
 			.expect(404)
 			.end(done);
 	});
+	
 	test('should return 404 when pass a valid object id, but id is not found in database', (done) => {
 		request(app)
-			.get('/todos/6aa438b4f5c25f4d70be2a9b')
+			.get(`/todos/${validHexID2}`)
 			.expect(404)
 			.end(done);
 	});
@@ -126,6 +133,7 @@ describe('GET /todos/:id', () => {
 
 describe('DELETE /todos/:id', () => {
 	let hexID = seedData[0]._id.toHexString();
+	
 	test('should remove specified todo', (done) => {
 		request(app)
 			.delete(`/todos/${hexID}`)
@@ -143,12 +151,14 @@ describe('DELETE /todos/:id', () => {
 				}).catch((e) => done(e));
 			});
 	});
+	
 	test('should return 404 status code on invalid object id', (done) => {
 		request(app)
 			.delete('/todos/115aa438b4f5c25f4d70be2a9b')
 			.expect(404)
 			.end(done);
 	});
+	
 	test('should return 404 when pass a valid object id, but id is not found in database', (done) => {
 		request(app)
 			.delete('/todos/6aa438b4f5c25f4d70be2a9b')
@@ -164,6 +174,7 @@ describe('PATCH /todos/:id', () => {
 		text: "updated todo",
 		completed: true
 	};
+	
 	test('should update the specified todo to complete', (done) => {
 		request(app)
 			.patch(`/todos/${hexID}`)
@@ -186,6 +197,7 @@ describe('PATCH /todos/:id', () => {
 	let update2 = {
 		completed: false
 	};
+	
 	test('should update the specified todo to incomplete, clearing completedAt field', (done) => {
 		request(app)
 			.patch(`/todos/${hexID2}`)
