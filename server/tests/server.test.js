@@ -309,7 +309,7 @@ describe('POST /login', () => {
 
 	test('it should reject invalid login', (done) => {
 		request(app)
-			.post('/login')
+			.post('/users/login')
 			.send({
 				email: testUsers[1].email,
 				password: 'invalid'
