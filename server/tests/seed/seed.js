@@ -44,19 +44,32 @@ const testTodos = [
 		_creator: userTwoObjId
 	}];
 
-const populateTodos = (done) => {
-	Todo.remove({}).then(() => {
-		Todo.insertMany(testTodos)
-	}).then(() => done());
+const populateTodos = async (done) => {
+	try {
+		await Todo.remove({});
+		await Todo.insertMany(testTodos);
+		done();
+	} catch (e) {
+		done(e);
+	}
 };
 
-const populateUsers = (done) => {
-	User.remove({}).then(() => {
-		let userOne = new User(testUsers[0]).save();
-		let userTwo = new User(testUsers[1]).save();
-		
-		return Promise.all([userOne, userTwo])
-	}).then(() => done());
+const populateUsers = async () => {
+	try {
+		await User.remove({});
+		const userOne = new User(testUsers[0]).save();
+		const userTwo = new User(testUsers[1]).save();
+		return await Promise.all([userOne, userTwo]);
+	} catch (e) {
+		return e;
+	}
+
+	//
+	// User.remove({}).then(() => {
+	// 	let userOne = new User(testUsers[0]).save();
+	// 	let userTwo = new User(testUsers[1]).save();
+	// 	return Promise.all([userOne, userTwo])
+	// }).then(() => done());
 };
 
 module.exports = {
