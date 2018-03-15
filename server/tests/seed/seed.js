@@ -4,8 +4,6 @@ const {ObjectID} = require('mongodb'),
 const {Todo} = require('../../db/models/todos'),
 			{User} = require('../../db/models/users');
 
-
-
 const userOneObjId = new ObjectID();
 const userTwoObjId = new ObjectID();
 const testUsers = [
@@ -44,13 +42,12 @@ const testTodos = [
 		_creator: userTwoObjId
 	}];
 
-const populateTodos = async (done) => {
+const populateTodos = async () => {
 	try {
 		await Todo.remove({});
 		await Todo.insertMany(testTodos);
-		done();
 	} catch (e) {
-		done(e);
+		return e;
 	}
 };
 
@@ -63,13 +60,6 @@ const populateUsers = async () => {
 	} catch (e) {
 		return e;
 	}
-
-	//
-	// User.remove({}).then(() => {
-	// 	let userOne = new User(testUsers[0]).save();
-	// 	let userTwo = new User(testUsers[1]).save();
-	// 	return Promise.all([userOne, userTwo])
-	// }).then(() => done());
 };
 
 module.exports = {
