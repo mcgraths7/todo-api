@@ -7,8 +7,8 @@ const express    = require('express'),
 			_          = require('lodash'),
 			bcrypt     = require('bcryptjs');
 
-const {Todo}         = require('./db/models/todos'),
-			{User}         = require('./db/models/users'),
+const {Todo}              = require('./db/models/todos'),
+			{User}              = require('./db/models/users'),
 			{asyncAuthenticate} = require('./middleware/asyncAuthenticate');
 
 let app = express();

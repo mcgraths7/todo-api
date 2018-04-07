@@ -4,8 +4,8 @@ const {ObjectID} = require('mongodb'),
 const {Todo} = require('../../db/models/todos'),
 			{User} = require('../../db/models/users');
 
-const userOneObjId = new ObjectID();
-const userTwoObjId = new ObjectID();
+const userOneObjId = new ObjectID(),
+			userTwoObjId = new ObjectID();
 const testUsers = [
 	{
 		_id: userOneObjId,
